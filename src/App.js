@@ -9,8 +9,6 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import './App.css';
 
-signin;
-
 const particlesOptions = {
   particles: {
     number: {
