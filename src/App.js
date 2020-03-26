@@ -2,21 +2,22 @@ import React, { Component } from 'react';
 import Particles from 'react-particles-js';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Navigation from './components/Navigation/Navigation';
-import SignIn from './components/SignIn/SignIn';
+import SignIn from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import './App.css';
-import { findRenderedDOMComponentWithClass } from 'react-dom/test-utils';
+
+signin;
 
 const particlesOptions = {
   particles: {
     number: {
-      value: 200,
+      value: 30,
       density: {
         enable: true,
-        value_area: 1000
+        value_area: 800
       }
     }
   }
@@ -24,9 +25,9 @@ const particlesOptions = {
 
 const initialState = {
   input: '',
-  imageURL: '',
+  imageUrl: '',
   box: {},
-  route: 'signin',
+  route: 'signIn',
   isSignedIn: false,
   user: {
     id: '',
@@ -58,7 +59,7 @@ class App extends Component {
   calculateFaceLocation = data => {
     const clarifaiFace =
       data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById('input-image');
+    const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
     return {
@@ -77,27 +78,9 @@ class App extends Component {
     this.setState({ input: event.target.value });
   };
 
-  onSubmitSignIn = () => {
-    fetch('http://localhost:3000/signin', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: this.state.signInEmail,
-        password: this.state.signInPassword
-      })
-    })
-      .then(response => response.json())
-      .then(user => {
-        if (user) {
-          this.props.loadUser(user);
-          this.props.onRouteChange('home');
-        }
-      });
-  };
-
   onButtonSubmit = () => {
-    this.setState({ imageURL: this.state.input });
-    fetch('http://localhost:3000/imageurl', {
+    this.setState({ imageUrl: this.state.input });
+    fetch('https://afternoon-peak-50158.herokuapp.com/imageurl', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -107,7 +90,7 @@ class App extends Component {
       .then(response => response.json())
       .then(response => {
         if (response) {
-          fetch('http://localhost:3000/image', {
+          fetch('https://afternoon-peak-50158.herokuapp.com/image', {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -135,8 +118,7 @@ class App extends Component {
   };
 
   render() {
-    const { isSignedIn, imageURL, route, box } = this.state;
-
+    const { isSignedIn, imageUrl, route, box } = this.state;
     return (
       <div className='App'>
         <Particles className='particles' params={particlesOptions} />
@@ -155,9 +137,9 @@ class App extends Component {
               onInputChange={this.onInputChange}
               onButtonSubmit={this.onButtonSubmit}
             />
-            <FaceRecognition box={box} imageURL={imageURL} />
+            <FaceRecognition box={box} imageUrl={imageUrl} />
           </div>
-        ) : route === 'signin' ? (
+        ) : route === 'signIn' ? (
           <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
         ) : (
           <Register
